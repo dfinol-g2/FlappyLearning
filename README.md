@@ -34,3 +34,15 @@ ne.networkScore(generation[x], <score = 0>);
 ```
 
 You can see the NeuroEvolution integration in Flappy Bird in [Game.js](http://github.com/xviniette/FlappyLearning/blob/gh-pages/game.js).
+
+
+### Run locally
+
+From the repository root, run `python3 -m http.server 8000 --bind 127.0.0.1`
+and open http://127.0.0.1:8000/. No dependencies or build step are required.
+
+Use x1/x2/x3/x5/MAX to select simulation speed. Pause freezes movement and
+learning; Resume continues from the same state at the selected speed. Changing
+speed while paused does not resume. The native buttons support Tab, Enter and
+Space. Reloading resets training. The sci-fi sprites preserve the original
+physics, collision geometry and learning configuration.
