@@ -1,6 +1,7 @@
 # Neon orbital lab verification
 
-Implementation: `http://127.0.0.1:8002/`.
+Original sci-fi feature preview: `http://127.0.0.1:8002/`.
+Combined feature verification: `http://127.0.0.1:8000/`.
 Source visual truth: approved Neon orbital lab art direction supplied in the task
 (navy `#07111F`, cyan `#53E4FF`, violet `#A78BFA`, white `#EAF6FF`, robotic
 bird, station gates and quiet orbital background). No selected mockup image was
@@ -51,12 +52,12 @@ This harness was temporary; no framework or test dependency was added.
 
 ## Pause/Resume integration
 
-The separate feature should add its native `button#pause-resume` to `.controls`
-and keep its existing behavior. Shared `button`, `button:hover` and
+The combined feature adds native `button#pause-resume` to `.controls`
+and retains its managed scheduler behavior. Shared `button`, `button:hover` and
 `button:focus-visible` rules apply. `#pause-resume[aria-pressed="true"]` uses
 restrained amber `#F2BE68` for the paused state. Speed state is scoped strictly
 to `button[data-fps]`, so it does not clear the pause button's aria-pressed state.
-No pause behavior is implemented here. Integration with that branch is untested.
+Pause behavior is integrated and verified below.
 
 ## Raster provenance
 
@@ -82,7 +83,41 @@ Final assets live in this worktree's `img/` directory. Prompt set:
 - Exact selected-mockup comparison remains unavailable; supply the original
   selected visual if strict image-to-image Product Design signoff is required.
 
-final result: blocked
+## Combined feature verification
 
-The blocked result refers only to the missing source-image fidelity comparison;
-it does not indicate a known implementation or behavior defect.
+Verified on 2026-11-09 after integrating TCP-2 and TCP-3 from the shared
+`workshop/base` commit `116cd51`. Merge resolution preserves both scheduling
+and speed-button selection updates in `speed()`, and inserts the native
+Pause/Resume button into the sci-fi controls. `AGENTS.md` and
+`Neuroevolution.js` are unchanged from the shared baseline.
+
+- `node --check game.js`, `node --check Neuroevolution.js`, and
+  `git diff --check workshop/base..HEAD` passed.
+- A temporary Node VM harness compared combined and baseline simulation state
+  after every tick: seeds 1, 42 and 8675309, 6000 ticks each (18000 ticks and
+  84 generation transitions). State matched exactly; rendering did not mutate
+  simulation state. Pipe contact/separation and canvas-boundary checks passed.
+- The harness passed all five speed selections, full simulation/neural-state
+  stability while paused, speed changes while paused, exact-state resume
+  without catch-up, stale MAX callback invalidation, and 100 rapid toggle
+  cycles with one live update chain. Canceled MAX callbacks may remain queued
+  until delivered; they do not advance the state.
+- In the in-app browser, the combined sci-fi assets and all four counters
+  rendered. Birds moved, collided, and generations advanced (generation 4
+  before MAX, then 22 and 59). All five speeds selected correctly while
+  running and paused. Tab reached Pause/Resume from MAX; Enter and Space
+  toggled it, with a visible violet focus outline and amber paused state.
+- Paused canvas state remained visibly unchanged for over five seconds at x1
+  and MAX, including birds, pipes, background and counters. Changing speed
+  kept the game paused. Resume continued movement and learning.
+- Captured browser console reported no warnings or errors. Local screenshot:
+  `/tmp/flappy-combined-paused.jpg` (verification artifact, not committed).
+- Read-only subagent review of the combined candidate found no important
+  correctness or integration findings. Its documentation note is resolved
+  by this combined verification section.
+
+Result: passed against the approved written art direction and combined feature
+requirements. Exact image-to-image fidelity is not applicable: no source
+mockup was supplied. Cross-browser/device coverage beyond the in-app browser
+was not performed for this integration pass. VM harness and screenshots were
+temporary verification artifacts, not a permanent automated test suite.
