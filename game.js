@@ -31,6 +31,10 @@ var images = {};
 
 var speed = function(fps){
 	FPS = parseInt(fps);
+	var buttons = document.querySelectorAll("button[data-fps]");
+	for(var i = 0; i < buttons.length; i++){
+		buttons[i].setAttribute("aria-pressed", parseInt(buttons[i].getAttribute("data-fps")) == FPS ? "true" : "false");
+	}
 }
 
 var loadImages = function(sources, callback){
@@ -251,9 +255,6 @@ Game.prototype.display = function(){
 			this.ctx.drawImage(images.pipebottom, this.pipes[i].x, this.pipes[i].y, this.pipes[i].width, images.pipetop.height);
 		}
 	}
-
-	this.ctx.fillStyle = "#FFC600";
-	this.ctx.strokeStyle = "#CE9E00";
 	for(var i in this.birds){
 		if(this.birds[i].alive){
 			this.ctx.save(); 
@@ -264,12 +265,25 @@ Game.prototype.display = function(){
 		}
 	}
 
-	this.ctx.fillStyle = "white";
-	this.ctx.font="20px Oswald, sans-serif";
-	this.ctx.fillText("Score : "+ this.score, 10, 25);
-	this.ctx.fillText("Max Score : "+this.maxScore, 10, 50);
-	this.ctx.fillText("Generation : "+this.generation, 10, 75);
-	this.ctx.fillText("Alive : "+this.alives+" / "+Neuvol.options.population, 10, 100);
+	// Opaque backing keeps telemetry legible as gates pass behind it.
+	this.ctx.fillStyle = "#07111F";
+	this.ctx.fillRect(10, 10, this.width - 20, 68);
+	this.ctx.strokeStyle = "#2C465E";
+	this.ctx.strokeRect(10.5, 10.5, this.width - 21, 67);
+	this.ctx.font = "12px ui-monospace, SFMono-Regular, Consolas, monospace";
+	this.ctx.fillStyle = "#A8BED0";
+	this.ctx.fillText("Score", 22, 31);
+	this.ctx.fillText("Max Score", 132, 31);
+	this.ctx.fillText("Generation", 260, 31);
+	this.ctx.fillText("Alive", 390, 31);
+	this.ctx.font = "18px ui-monospace, SFMono-Regular, Consolas, monospace";
+	this.ctx.fillStyle = "#EAF6FF";
+	this.ctx.fillText(this.score, 22, 59);
+	this.ctx.fillText(this.maxScore, 132, 59);
+	this.ctx.fillStyle = "#A78BFA";
+	this.ctx.fillText(this.generation, 260, 59);
+	this.ctx.fillStyle = "#53E4FF";
+	this.ctx.fillText(this.alives+" / "+Neuvol.options.population, 390, 59);
 
 	var self = this;
 	requestAnimationFrame(function(){
